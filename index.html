@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <title>Send Love Note</title>
+  <title>Thinking of You</title>
   <style>
     :root {
       --bg: #fff7fb;
@@ -169,12 +169,33 @@
       .card { padding: 18px; }
       h1 { font-size: 1.55rem; }
     }
-  </style>
+  .heart-button {
+  width: 200px;
+  height: 180px;
+  margin: 10px auto 0;
+  background: var(--accent);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  border-radius: 20px;
+  clip-path: path("M100 30 C100 10 130 0 150 20 C170 40 160 70 100 120 C40 70 30 40 50 20 C70 0 100 10 100 30 Z");
+}
+
+.heart-button:hover {
+  background: var(--accent-dark);
+}
+
+</style>
 </head>
 <body>
   <main class="app">
     <section class="card">
-      <h1>💌 Send Love Note</h1>
+      <h1>💌 Thinking of You</h1>
       <p>Open this from your iPhone home screen, write your message, and send it straight to the box.</p>
     </section>
 
@@ -207,7 +228,7 @@
         <div class="helper">New messages are saved as unread.</div>
       </div>
 
-      <button id="sendBtn" class="button button-primary" type="button">Send message</button>
+      <button id="sendBtn" class="button heart-button" type="button">Send Message</button>
       <div id="sendStatus" class="status muted"></div>
     </section>
   </main>
