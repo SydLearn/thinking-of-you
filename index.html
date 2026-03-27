@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>Send Love Note</title>
+  <style>
+    :root {
+      --bg: #fff7fb;
+      --card: #ffffff;
+      --text: #2b2030;
+      --muted: #7a6a78;
+      --border: #edd8e8;
+      --accent: #d95ca6;
+      --accent-dark: #b93f89;
+      --danger: #b00020;
+      --success: #1f7a48;
+      --shadow: 0 14px 40px rgba(113, 57, 95, 0.12);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #fff7fb 0%, #fffaf3 100%);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 20px 16px 40px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 460px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.7rem;
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .hidden { display: none !important; }
+
+    label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .field {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(217, 92, 166, 0.14);
+    }
+
+    textarea.field {
+      min-height: 180px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .button:active { transform: scale(0.98); }
+    .button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .button-primary {
+      background: var(--accent);
+      color: #fff;
+      width: 100%;
+    }
+
+    .button-primary:hover { background: var(--accent-dark); }
+
+    .button-secondary {
+      background: #f8e9f3;
+      color: var(--accent-dark);
+    }
+
+    .status {
+      min-height: 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+    .status.muted { color: var(--muted); font-weight: 500; }
+
+    .helper {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff2f8;
+      color: var(--accent-dark);
+      border: 1px solid #f2d7e7;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 420px) {
+      .card { padding: 18px; }
+      h1 { font-size: 1.55rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <h1>💌 Send Love Note</h1>
+      <p>Open this from your iPhone home screen, write your message, and send it straight to the box.</p>
+    </section>
+
+    <section id="authCard" class="card stack">
+      <div>
+        <label for="email">Email</label>
+        <input id="email" class="field" type="email" autocomplete="username" placeholder="you@example.com" />
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input id="password" class="field" type="password" autocomplete="current-password" placeholder="Password" />
+      </div>
+      <button id="signInBtn" class="button button-primary">Sign in</button>
+      <div id="authStatus" class="status muted"></div>
+    </section>
+
+    <section id="senderCard" class="card stack hidden">
+      <div class="row">
+        <div class="pill">Signed in as <span id="userEmail"></span></div>
+        <button id="signOutBtn" class="button button-secondary" type="button">Sign out</button>
+      </div>
+
+      <div>
+        <label for="message">Message</label>
+        <textarea id="message" class="field" maxlength="220" placeholder="Write something sweet..."></textarea>
+      </div>
+
+      <div class="row">
+        <div id="charCount" class="helper">0 / 220</div>
+        <div class="helper">New messages are saved as unread.</div>
+      </div>
+
+      <button id="sendBtn" class="button button-primary" type="button">Send message</button>
+      <div id="sendStatus" class="status muted"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import {
+      getAuth,
+      setPersistence,
+      browserLocalPersistence,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC_AzAl9TK1yydKO3yhkeloNLRL178Em-Q",
+      authDomain: "thinking-of-you-esp32.firebaseapp.com",
+      databaseURL: "https://thinking-of-you-esp32-default-rtdb.firebaseio.com",
+      projectId: "thinking-of-you-esp32"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const authCard = document.getElementById("authCard");
+    const senderCard = document.getElementById("senderCard");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const signInBtn = document.getElementById("signInBtn");
+    const signOutBtn = document.getElementById("signOutBtn");
+    const authStatus = document.getElementById("authStatus");
+    const userEmail = document.getElementById("userEmail");
+    const messageInput = document.getElementById("message");
+    const sendBtn = document.getElementById("sendBtn");
+    const sendStatus = document.getElementById("sendStatus");
+    const charCount = document.getElementById("charCount");
+
+    function setStatus(el, text, type = "muted") {
+      el.textContent = text;
+      el.className = `status ${type}`;
+    }
+
+    function updateAuthUI(user) {
+      const signedIn = !!user;
+      authCard.classList.toggle("hidden", signedIn);
+      senderCard.classList.toggle("hidden", !signedIn);
+      userEmail.textContent = user?.email || "";
+    }
+
+    function updateCharCount() {
+      charCount.textContent = `${messageInput.value.length} / 220`;
+    }
+
+    async function handleSignIn() {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        setStatus(authStatus, "Enter your email and password.", "error");
+        return;
+      }
+
+      signInBtn.disabled = true;
+      setStatus(authStatus, "Signing in...", "muted");
+
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        await signInWithEmailAndPassword(auth, email, password);
+        setStatus(authStatus, "Signed in.", "success");
+        passwordInput.value = "";
+      } catch (error) {
+        setStatus(authStatus, error.message || "Sign-in failed.", "error");
+      } finally {
+        signInBtn.disabled = false;
+      }
+    }
+
+    async function handleSend() {
+      const text = messageInput.value.trim();
+
+      if (!text) {
+        setStatus(sendStatus, "Write a message first.", "error");
+        return;
+      }
+
+      sendBtn.disabled = true;
+      setStatus(sendStatus, "Sending...", "muted");
+
+      try {
+        const messagesRef = ref(db, "messages");
+        const newMessageRef = push(messagesRef);
+
+        await set(newMessageRef, {
+          text,
+          timestamp: Date.now(),
+          read: false
+        });
+
+        messageInput.value = "";
+        updateCharCount();
+        setStatus(sendStatus, "Sent 💖", "success");
+      } catch (error) {
+        setStatus(sendStatus, error.message || "Could not send message.", "error");
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    signInBtn.addEventListener("click", handleSignIn);
+    signOutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      setStatus(sendStatus, "Signed out.", "muted");
+    });
+    sendBtn.addEventListener("click", handleSend);
+    messageInput.addEventListener("input", updateCharCount);
+
+    onAuthStateChanged(auth, (user) => {
+      updateAuthUI(user);
+      if (user) {
+        setStatus(sendStatus, "Ready to send.", "muted");
+      } else {
+        setStatus(authStatus, "Sign in once and your session should stay on this phone.", "muted");
+      }
+    });
+
+    updateCharCount();
+  </script>
+</body>
+</html>
